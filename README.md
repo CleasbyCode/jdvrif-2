@@ -1,8 +1,10 @@
 # jdvrif
 
-A steganography command-line tool used for embedding and extracting any file type via a **JPG** cover image.  
+A fast steganography command-line tool used for embedding and extracting any file type via a **JPG** image.  
 
-There is also a Web App version, which you can try [***here***](https://cleasbycode.co.uk/jdvrif/index/) as a convenient alternative to downloading and compiling the CLI source code. Web file uploads are limited to **20MB**.    
+If you have any problems using ***jdvrif***, then please let me know: [***@cleasbycode***](https://x.com/CleasbyCode).
+
+There is also a [***Web edition***](https://cleasbycode.co.uk/jdvrif/index/), which you can try immediately, as a convenient alternative to downloading and compiling the CLI source code. Web file uploads are limited to **20MB**.    
 
 ![Demo Image](https://github.com/CleasbyCode/jdvrif/blob/main/demo_image/jrif_73184.jpg)  
 *Demo Image: **"A place of concealment"** / ***PIN: 17129461748195490639****
@@ -20,30 +22,30 @@ https://github.com/user-attachments/assets/8d21cdbb-30f0-424c-aeb8-bcacca8c4255
 https://github.com/user-attachments/assets/a7830132-55eb-42d9-88b8-49e16427b39a
 
 ## Compatible Platforms
-*Posting size limit measured by the combined size of the cover image + compressed data file:*  
+*Posting size limit measured by the ***combined*** size of the ***cover image*** + ***compressed data file:****  
 
-● ***Flickr*** (**200MB**), ***ImgPile*** (**100MB**), ***ImgBB*** (**32MB**), ***PostImage*** (**32MB**), ***Reddit*** (**20MB** | ***-r option***).  
+● ***Flickr*** (**200MB**), ***ImgPile*** (**100MB**), ***ImgBB*** (**32MB**),  
+● ***PostImage*** (**32MB**), ***Reddit*** (**20MB** | ***-r option***), ***Pixelfed*** (**15MB**).
 
-*Size limit measured only by the compressed data file size:*  
+*Size limit measured ***only*** by the ***compressed data file size:****  
 
 ● ***Mastodon*** (**~6MB**), ***Tumblr*** (**~64KB**), ***X-Twitter*** (**~10KB**).  
 
 For example, with ***Mastodon***, if your cover image is **1MB** you can still embed a data file up to the **~6MB** size limit.
 
-**Other: The ***Bluesky*** platform has separate size limits for the cover image and the compressed data file:*  
+**Other: The ***Bluesky*** platform has ***separate*** size limits for the ***cover image*** and the ***compressed data file:****  
 
 ● ***Bluesky*** (***-b option***). Cover image size limit (**800KB**). Compressed data file size limit (**~171KB**).  
 ● "***bsky_post.py***" script is required to post images on ***Bluesky***. *More info on this further down the page.*
 
-For platforms such as ***X-Twitter*** & ***Tumblr***, which have small size limits, you may want to focus on data files  
-that compress well, such as .txt documents, etc.  
+For platforms such as ***X-Twitter*** & ***Tumblr***, which have small size limits, you may want to focus on data that compress well, such as text files, etc.  
   
 ## Usage (Linux)
 
 ```console
+Note: Compiler support for C++23 required.
 
-user1@mx:~/Downloads/jdvrif-main/src$ sudo apt-get install libsodium-dev
-user1@mx:~/Downloads/jdvrif-main/src$ sudo apt-get install libturbojpeg0-dev
+user1@mx:~/Downloads/jdvrif-main/src$ sudo apt install libsodium-dev libturbojpeg0-dev
 user1@mx:~/Downloads/jdvrif-main/src$ chmod +x compile_jdvrif.sh
 user1@mx:~/Downloads/jdvrif-main/src$ ./compile_jdvrif.sh
 user1@mx:~/Downloads/jdvrif-main/src$ Compilation successful. Executable 'jdvrif' created.
@@ -62,12 +64,13 @@ Platform compatibility for output image:-
   ✓ X-Twitter
   ✓ Tumblr
   ✓ Mastodon
+  ✓ Pixelfed
   ✓ PostImage
   ✓ ImgBB
   ✓ ImgPile
   ✓ Flickr
   
-Saved "file-embedded" JPG image: jrif_12462.jpg (143029 bytes).
+Saved "file-embedded" JPG image: jrif_129462.jpg (143029 bytes).
 
 Recovery PIN: [***2166776980318349924***]
 
@@ -75,7 +78,7 @@ Important: Keep your PIN safe, so that you can extract the hidden file.
 
 Complete!
         
-user1@mx:~/Desktop$ jdvrif recover jrif_12462.jpg
+user1@mx:~/Desktop$ jdvrif recover jrif_129462.jpg
 
 PIN: *******************
 
@@ -98,15 +101,27 @@ jdvrif ***conceal*** mode platform options:
   These images are only compatible for posting on ***Bluesky***. Your embedded data file will be removed if posted on a different platform.
  
   You are required to use the Python script ***"bsky_post.py"*** (found in the repo ***src*** folder) to post the image to ***Bluesky***.
-  It will not work if you post images to ***Bluesky*** via the browser site or mobile app.
+  It will not work if you post images to ***Bluesky*** via the browser site or mobile app.  
 
-  Script example:
-  
+  You will also need to create an ***app password*** from your ***Bluesky*** account, to use with the ***bsky_post.py*** script. (https://bsky.app/settings/app-passwords).  
+
+  Here are some basic usage examples for the ***bsky_post.py*** script:  
+
+  Standard image post to your profile/account.
+
   ```console
-   $ python3 bsky_post.py --handle exampleuser.bsky.social --password pxae-f17r-alp4-xqka
-    --image jrif_11050.jpg --alt-text "text to describe image" "text to appear in main post"
+  $ python3 bsky_post.py --handle you.bsky.social --password xxxx-xxxx-xxxx-xxxx --image your_image.jpg --alt-text "alt-text here (optional)" "standard post text here (required)"
   ```
-   You will also need to create an ***app password*** from your ***Bluesky*** account, to use with the ***bsky_post.py*** script. (https://bsky.app/settings/app-passwords).  
+  If you want to post multiple images (Max. 4).  
+
+  ```console 
+  $ python3 bsky_post.py --handle you.bsky.social --password xxxx-xxxx-xxxx-xxxx --image img1.jpg --image img2.jpg --alt-text "alt_here" "standard post text..."
+  ```
+  If you want to post an image as a reply to another thread.  
+
+  ```console
+  $ python3 bsky_post.py --handle you.bsky.social --password xxxx-xxxx-xxxx-xxxx --image your_image.jpg --alt-text "alt_here" --reply-to https://bsky.app/profile/someone.bsky.social/post/8m2tgw6cgi23i "standard post text..."
+  ```
 
 https://github.com/user-attachments/assets/b4c72ea7-40e3-49b0-89aa-ae2dd8ccccb9   
 
